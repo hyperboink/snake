@@ -8,7 +8,7 @@ $(function(){
 		isColliding,
 		axis,
 		snake = {
-			positions: [{x: 0, y: 10}],
+			positions: [],
 			color: 'teal',
 			size: 3,
 			pixelSize: 10,
@@ -17,7 +17,7 @@ $(function(){
 				color: '#000'
 			},
 			food: {},
-			time: 100,
+			time: 85,
 			score: 0,
 			gameOver: {
 				header: {
@@ -54,7 +54,7 @@ $(function(){
 	function createSnake(){
 		snake.positions = [];
 		for(var i = 0; i < snake.size; i++){
-			snake.positions.push({x: snake.size + i, y: 10});
+			snake.positions.push({x: i + 10, y: 10});
 		}
 	}
 
