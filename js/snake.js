@@ -176,7 +176,7 @@ $(function(){
 
 
 	$(document).on('keydown', function(e){
-		var key = e.which ? e.which : e,keyCode;
+		var key = e.keyCode || e.which;
 
 		setTimeout(function(){
 			if(isColliding){
