@@ -60,19 +60,23 @@ $(function(){
 
 	function drawSnake(){
 		for(var i = 0; i < snake.positions.length; i++){
-			snakeCell = snake.positions[i];
-			drawCell(snakeCell.x, snakeCell.y);
+			snakePixel = snake.positions[i];
+			drawPixel(snakePixel.x, snakePixel.y);
 		}
 	}
 
 	function createFood(){
-		return snake.food = {
+		snake.food = {
 			x: Math.round( Math.random() * ($width - snake.pixelSize) / snake.pixelSize ),
 			y: Math.round( Math.random() * ($height - snake.pixelSize * 2) / snake.pixelSize )
 		}
 	}
 
-	function drawCell(x, y, bgColor){
+	function drawFood(){
+		drawPixel(snake.food.x, snake.food.y);
+	}
+
+	function drawPixel(x, y, bgColor){
 		context.fillStyle = bgColor ? bgColor : snake.color;
 		context.fillRect(x * snake.pixelSize, y * snake.pixelSize, snake.pixelSize, snake.pixelSize);
 	}
@@ -149,7 +153,7 @@ $(function(){
 
 		drawSnake();
 
-		drawCell(snake.food.x, snake.food.y);
+		drawFood();
 
 		drawScore(snake.score);
 
