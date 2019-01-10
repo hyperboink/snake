@@ -1,21 +1,41 @@
+<!DOCTYPE html>
 <html>
 
 <head>
 
 <title>Snake</title>
 
-<style>
-	#canvas{
-		margin: 0 auto;
-		display: block;
-	}
-</style>
+<meta name="viewport" content="width=device-width">
 
+<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+
+<link rel="stylesheet" href="css/style.css">
 
 </head>
 
 <body>
-	<canvas id="canvas" width="480" height="320"></canvas>
+
+	<canvas id="canvas" width="320" height="290"></canvas>
+
+	<div class="controller">
+		<div class="controller-icon">
+			<img src="images/game-controller.png" title="Controller for Mobile" alt="Controller">
+			<span> Controller for mobile</span>
+		</div>
+		<div class="controller-in">
+			<div class="top">
+				<button class="up">UP</button>
+			</div>
+			<div class="middle">
+				<button class="left">LEFT</button>
+				<button class="right">RIGHT</button>
+			</div>
+			<div class="bottom">
+				<button class="down">DOWN</button>
+			</div>
+		</div>
+	</div>
+
 </body>
 
 <script src="js/jquery-1.12.4.js"></script>

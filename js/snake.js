@@ -196,6 +196,26 @@ $(function(){
 
 	});
 
+	$(document).on('click touchstart', '.up', function(){
+		if(snake.direction != 'down' && axis != 'vertical') snake.direction = 'up';
+	});
+
+	$(document).on('click touchstart', '.down', function(){
+		if(snake.direction != 'up' && axis != 'vertical') snake.direction = 'down';
+	});
+
+	$(document).on('click touchstart', '.left', function(){
+		if(snake.direction != 'right' && axis != 'horizontal') snake.direction = 'left';
+	});
+
+	$(document).on('click touchstart', '.right', function(){
+		if(snake.direction != 'left' && axis != 'horizontal') snake.direction = 'right';
+	});
+
+	$('.controller-icon').on('click', function(){
+		$('.controller').toggleClass('show');
+	});
+
 	startGame();
 
 });
