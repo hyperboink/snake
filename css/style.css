@@ -46,9 +46,9 @@ html, body {
 	display: none;
 }
 .controller button{
-	margin: 0 22px 0px 22px;
-	height: 40px;
-	width: 50px;
+	margin: 0 33px 0px 33px;
+	height: 60px;
+	width: 70px;
 	font-size: 10px;
 	font-weight: 700;
 	background: #008481;
@@ -64,4 +64,14 @@ html, body {
 	z-index: 10;
 	display: inline-block;
 	padding: 0 0 0 10px;
+}
+.controller .up, .controller .down{
+	margin-left: 0;
+	margin-right: 0;
+}
+.controller .left{
+	margin-left: 0;
+}
+.controller .right{
+	margin-right: 0;
 }
