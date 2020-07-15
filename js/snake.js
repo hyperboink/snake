@@ -1,10 +1,10 @@
-$(function(){
+(function(){
 
 	var canvas = document.getElementById('canvas'),
 		context = canvas.getContext('2d'),
-		$canvas = $('#canvas'),
-		$width = $canvas.width(),
-		$height = $canvas.height(),
+		width = canvas.width,
+		height = canvas.height,
+		_click = 'ontouchstart' in window ? 'touchstart' : 'click',
 		isColliding,
 		axis,
 		snake = {
@@ -43,12 +43,12 @@ $(function(){
 				left: 37,
 				right: 39
 			}
-		}
+		};
 
 
 	function createStage(bgColor){
 		context.fillStyle = bgColor ? bgColor : snake.stage.color;
-		context.fillRect(0, 0, $width, $height);
+		context.fillRect(0, 0, width, height);
 	}
 
 	function createSnake(){
@@ -67,8 +67,8 @@ $(function(){
 
 	function createFood(){
 		snake.food = {
-			x: Math.round( Math.random() * ($width - snake.pixelSize) / snake.pixelSize ),
-			y: Math.round( Math.random() * ($height - snake.pixelSize * 2) / snake.pixelSize )
+			x: Math.round( Math.random() * (width - snake.pixelSize) / snake.pixelSize ),
+			y: Math.round( Math.random() * (height - snake.pixelSize * 2) / snake.pixelSize )
 		}
 	}
 
@@ -90,15 +90,15 @@ $(function(){
 
 	function drawScore(score, bgColor){
 		context.fillStyle = bgColor ? bgColor : snake.color;
-		context.fillText('Score: ' + score, 5, $height - 5);
+		context.fillText('Score: ' + score, 5, height - 5);
 	}
 
 	function gameOver(){
 		context.fillStyle = snake.gameOver.header.font.color;
 		context.font = snake.gameOver.header.font.size + ' ' + snake.gameOver.header.font.family;
-		context.fillText(snake.gameOver.header.text, ($width - 80) / 2, ($height - 15) / 2);
+		context.fillText(snake.gameOver.header.text, (width - 80) / 2, (height - 15) / 2);
 		context.font = snake.gameOver.content.font.size + ' ' + snake.gameOver.content.font.family;
-		context.fillText(snake.gameOver.content.text, ($width - 120) / 2, ($height + 15) / 2);
+		context.fillText(snake.gameOver.content.text, (width - 120) / 2, (height + 15) / 2);
 	}
 
 	function snakeMove(){
@@ -144,10 +144,16 @@ $(function(){
 			snakeTail.y = positionY;
 		}
 
-		if(positionX === -1) snakeTail.x = $width / snake.pixelSize;
-		if(positionX === $width / snake.pixelSize) snakeTail.x = 0;
-		if(positionY === -1) snakeTail.y = $height / snake.pixelSize;
-		if(positionY === $height / snake.pixelSize) snakeTail.y = 0;
+		for(var i = 0; i < snake.positions.length; i++){
+			if(snake.positions[i].x === snake.food.x && snake.positions[i].y === snake.food.y){
+				createFood();
+			}
+		}
+
+		if(positionX === -1) snakeTail.x = width / snake.pixelSize;
+		if(positionX === width / snake.pixelSize) snakeTail.x = 0;
+		if(positionY === -1) snakeTail.y = height / snake.pixelSize;
+		if(positionY === height / snake.pixelSize) snakeTail.y = 0;
 
 		snake.positions.unshift(snakeTail);
 
@@ -178,44 +184,70 @@ $(function(){
 		start = setInterval(snakeMove, snake.time);
 	}
 
+	function restart(){
+		startGame();
+		reset();
+	}
 
-	$(document).on('keydown', function(e){
+	function restartIfCollide(direction){
+
+		var directions = {
+			up: {
+				opposite: 'down',
+				oppositeAxis: 'vertical'
+			},
+			down: {
+				opposite: 'up',
+				oppositeAxis: 'vertical'
+			},
+			left: {
+				opposite: 'right',
+				oppositeAxis: 'horizontal'
+			},
+			right: {
+				opposite: 'left',
+				oppositeAxis: 'horizontal'
+			}
+		};
+
+		for(x in directions){
+			if(direction == x){
+				if(!isColliding){
+					if(snake.direction != directions[x].opposite && axis != directions[x].oppositeAxis){
+						snake.direction = direction;
+					}
+				}else{
+					restart();
+				}
+			}
+		}
+	}
+
+	window.addEventListener('keydown', function(e){
 		var key = e.keyCode || e.which;
 
-		setTimeout(function(){
-			if(isColliding){
-				startGame();
-				reset();
-			}
-		}, snake.time);
-
-		if(key === snake.controls.up && snake.direction != 'down' && axis != 'vertical') snake.direction = 'up';
-		else if(key === snake.controls.down && snake.direction != 'up' && axis != 'vertical') snake.direction = 'down';
-		else if(key === snake.controls.left && snake.direction != 'right' && axis != 'horizontal') snake.direction = 'left';
-		else if(key === snake.controls.right && snake.direction != 'left' && axis != 'horizontal') snake.direction = 'right';
+		if(!isColliding){
+			if(key === snake.controls.up && snake.direction != 'down' && axis != 'vertical') snake.direction = 'up';
+			else if(key === snake.controls.down && snake.direction != 'up' && axis != 'vertical') snake.direction = 'down';
+			else if(key === snake.controls.left && snake.direction != 'right' && axis != 'horizontal') snake.direction = 'left';
+			else if(key === snake.controls.right && snake.direction != 'left' && axis != 'horizontal') snake.direction = 'right';
+		}else{
+			restart();
+		}
 
 	});
 
-	$(document).on('click touchstart', '.up', function(){
-		if(snake.direction != 'down' && axis != 'vertical') snake.direction = 'up';
+	Array.prototype.forEach.call(document.querySelectorAll('.controller-in button'), function(node){
+		node.addEventListener(_click, function(){
+			restartIfCollide(this.getAttribute('class'));
+		});
 	});
 
-	$(document).on('click touchstart', '.down', function(){
-		if(snake.direction != 'up' && axis != 'vertical') snake.direction = 'down';
-	});
-
-	$(document).on('click touchstart', '.left', function(){
-		if(snake.direction != 'right' && axis != 'horizontal') snake.direction = 'left';
-	});
-
-	$(document).on('click touchstart', '.right', function(){
-		if(snake.direction != 'left' && axis != 'horizontal') snake.direction = 'right';
-	});
-
-	$('.controller-icon').on('click', function(){
-		$('.controller').toggleClass('show');
+	document.querySelector('.controller-icon').addEventListener(_click, function(){
+		this.parentElement.classList.toggle('show');
 	});
 
 	startGame();
 
-});
+})();
+
